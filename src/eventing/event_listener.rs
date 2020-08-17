@@ -1,18 +1,16 @@
 use super::rabbitmq_wrapper::RabbitMQWrapper;
-use crate::storage::file_system_interface::FileSystemInterface;
+
+use crate::storage::{storage_interface::Storage, storage_utils::create_storage_interface};
 use crate::utils::{
-    connection_context::ConnectionContext,
-    error_structs::TaucetiError,
-    events::{DocType, StorageType, TaucetiEvent},
+    connection_context::ConnectionContext, error_structs::TaucetiError, events::TaucetiEvent,
 };
 use crate::{
-    parsing::{fake_source::FakeSource, text_file_reader::TextFileReader, word_reader::WordReader},
-    parsing::{pdf_reader::PdfReader, reader::DocReader},
-    storage::dummy_storage_interface::DummyStorageInterface,
+    parsing::{reader::DocReader, reader_utils::create_doc_reader},
+    tasks::build_task,
+    trees::index_tree::IndexTree,
 };
-use crate::{storage::storage_interface::Storage, tasks::build_task, trees::index_tree::IndexTree};
 use async_std::prelude::*;
-use async_std::{path::PathBuf, task};
+use async_std::task;
 use futures::channel::mpsc;
 use log::{debug, error, info};
 use std::sync::{Arc, Mutex};
@@ -69,8 +67,8 @@ impl EventListener {
         debug!("msg received from broker {}", msg,);
         match event {
             TaucetiEvent::UploadEvent(storage_type, doc_type, uri, doc_id) => {
-                let mut storage = Self::create_storage_interface(&storage_type, uri.clone());
-                let mut reader = Self::create_doc_reader(&doc_type, uri.clone());
+                let mut storage = create_storage_interface(&storage_type, uri.clone());
+                let mut reader = create_doc_reader(&doc_type, uri.clone());
 
                 Self::handle(&mut storage, &mut reader, tree, doc_id).await?;
             }
@@ -89,23 +87,5 @@ impl EventListener {
     ) -> Result<(), std::io::Error> {
         build_task::build(s.as_mut(), r.as_mut(), tree, doc_id).await?;
         Ok(())
-    }
-
-    /// Factory method to create a concrete doc reader depending on the doc type
-    fn create_doc_reader(doc_type: &DocType, uri: String) -> Box<dyn DocReader> {
-        match doc_type {
-            DocType::Text => Box::new(TextFileReader::new(uri)),
-            DocType::PDF => Box::new(PdfReader::new(uri)),
-            DocType::Word => Box::new(WordReader::new(uri)),
-            DocType::Raw => Box::new(FakeSource::new()),
-        }
-    }
-
-    /// Factory method to create a concrete storage interface depending on the doc type
-    fn create_storage_interface(storage_type: &StorageType, uri: String) -> Box<dyn Storage> {
-        match storage_type {
-            StorageType::FileSystem => Box::new(FileSystemInterface::new(uri)),
-            _ => Box::new(DummyStorageInterface::new()),
-        }
     }
 }

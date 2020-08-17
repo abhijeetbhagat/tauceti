@@ -1,22 +1,6 @@
 extern crate serde;
+use super::{reader_enums::DocType, storage_enums::StorageType};
 use serde::{Deserialize, Serialize};
-
-#[derive(Serialize, Deserialize, Debug)]
-/// Type of storage - file system, object storage, etc.
-pub enum StorageType {
-    FileSystem,
-    ObjectStorageSystem,
-    Fake,
-}
-
-/// Type of document
-#[derive(Serialize, Deserialize, Debug)]
-pub enum DocType {
-    Text,
-    PDF,
-    Word,
-    Raw,
-}
 
 #[derive(Serialize, Deserialize, Debug)]
 /// All the events in the system
