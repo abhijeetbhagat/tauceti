@@ -21,7 +21,7 @@ use std::sync::{Arc, Mutex};
 pub(crate) struct EventListener {
     broker: RabbitMQWrapper,
     rx: mpsc::UnboundedReceiver<Vec<u8>>,
-    tree: Arc<Mutex<IndexTree<String>>>,
+    tree: Arc<Mutex<IndexTree<String, u32>>>,
 }
 
 impl EventListener {
@@ -61,7 +61,7 @@ impl EventListener {
     /// TODO: abhi: this should handle a type like `Event`
     async fn handle_event(
         msg: Vec<u8>,
-        tree: Arc<Mutex<IndexTree<String>>>,
+        tree: Arc<Mutex<IndexTree<String, u32>>>,
     ) -> Result<(), std::io::Error> {
         let msg = String::from_utf8(msg).unwrap();
         let event: TaucetiEvent = serde_json::from_str(&msg).unwrap();
@@ -84,7 +84,7 @@ impl EventListener {
     async fn handle(
         s: &mut Box<dyn Storage>,
         r: &mut Box<dyn DocReader>,
-        tree: Arc<Mutex<IndexTree<String>>>,
+        tree: Arc<Mutex<IndexTree<String, u32>>>,
         doc_id: u32,
     ) -> Result<(), std::io::Error> {
         build_task::build(s.as_mut(), r.as_mut(), tree, doc_id).await?;

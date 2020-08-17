@@ -3,11 +3,11 @@ use std::{
     hash::Hash,
 };
 
-pub struct IndexTree<K> {
-    map: HashMap<K, Vec<u32>>,
+pub struct IndexTree<K, V> {
+    map: HashMap<K, Vec<V>>,
 }
 
-impl<K> IndexTree<K> {
+impl<K, V> IndexTree<K, V> {
     /// Creates a new `IndexTree`
     pub fn new() -> Self {
         IndexTree {
@@ -18,7 +18,7 @@ impl<K> IndexTree<K> {
     /// Inserts a new key-value pair in tree.
     ///
     /// Appends the value if the key is already present.
-    pub fn insert(&mut self, key: K, val: u32)
+    pub fn insert(&mut self, key: K, val: V)
     where
         K: Eq + Hash + Clone,
     {
@@ -27,9 +27,10 @@ impl<K> IndexTree<K> {
     }
 
     /// Finds intersection of all the arrays
-    pub fn intersection<U>(&self, ids: &[U]) -> Vec<u32>
+    pub fn intersection<U>(&self, ids: &[U]) -> Vec<V>
     where
-        U: AsRef<[u32]>,
+        V: Eq + Hash + Copy,
+        U: AsRef<[V]>,
     {
         let mut set = HashSet::new();
         for array in ids {
@@ -47,7 +48,7 @@ impl<K> IndexTree<K> {
     }
 
     /// Gets the list of indices (value) for a term (key)
-    fn get(&self, k: &K) -> Option<&Vec<u32>>
+    fn get(&self, k: &K) -> Option<&Vec<V>>
     where
         K: Eq + Hash,
     {
@@ -57,9 +58,10 @@ impl<K> IndexTree<K> {
     /// Performs a boolean query (intersection) on the terms
     ///
     /// to find the common indices containing all the terms
-    pub fn query(&self, terms: &[K]) -> Vec<u32>
+    pub fn query(&self, terms: &[K]) -> Vec<V>
     where
-        K: Eq + Hash + Clone,
+        V: Eq + Hash + Copy,
+        K: Eq + Hash,
     {
         let mut id_collection = vec![];
         for term in terms {
@@ -79,7 +81,7 @@ fn test_it_ops() {
     assert_eq!(it.keys(), 3);
     assert_eq!(it.get(&"c++"), Some(&vec![1, 2]));
     assert_eq!(
-        it.intersection(&[&[1u32, 1, 2, 3] as &[_], &[1, 2, 3]])
+        it.intersection(&[&[1u32, 1, 2, 3] as &[_], &[1u32, 2, 3]])
             .len(),
         3
     );

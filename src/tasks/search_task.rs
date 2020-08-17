@@ -18,7 +18,7 @@ impl TaucetiTask for SearchTask {
 }
 
 pub async fn search(
-    index_tree: Arc<RwLock<IndexTree<String>>>,
+    index_tree: Arc<RwLock<IndexTree<String, u32>>>,
     doc_id: u32,
 ) -> Result<Vec<u32>, std::io::Error> {
     let guard = index_tree.read().await;

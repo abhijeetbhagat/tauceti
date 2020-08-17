@@ -14,7 +14,7 @@ impl UploadTask {
 pub async fn build<S: Storage + ?Sized, R: DocReader + ?Sized>(
     storage: &mut S,
     reader: &mut R,
-    index_tree: Arc<Mutex<IndexTree<String>>>,
+    index_tree: Arc<Mutex<IndexTree<String, u32>>>,
     doc_id: u32,
 ) -> Result<(), std::io::Error> {
     let local_path = storage.get().await?;

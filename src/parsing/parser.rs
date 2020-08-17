@@ -4,12 +4,12 @@ use std::sync::{Arc, Mutex};
 
 pub struct Parser<'a> {
     lexer: Lexer<'a>,
-    tree: Arc<Mutex<IndexTree<String>>>,
+    tree: Arc<Mutex<IndexTree<String, u32>>>,
     id: u32,
 }
 
 impl<'a> Parser<'a> {
-    pub fn new(source: &'a str, tree: Arc<Mutex<IndexTree<String>>>, id: u32) -> Parser<'a> {
+    pub fn new(source: &'a str, tree: Arc<Mutex<IndexTree<String, u32>>>, id: u32) -> Parser<'a> {
         Parser {
             lexer: Lexer::new(source),
             tree,
