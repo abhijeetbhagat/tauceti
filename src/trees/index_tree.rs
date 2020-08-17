@@ -1,4 +1,5 @@
 use std::{
+    borrow::Borrow,
     collections::{HashMap, HashSet},
     hash::Hash,
 };
@@ -7,7 +8,10 @@ pub struct IndexTree<K, V> {
     map: HashMap<K, Vec<V>>,
 }
 
-impl<K, V> IndexTree<K, V> {
+impl<K, V> IndexTree<K, V>
+where
+    K: Eq + Hash,
+{
     /// Creates a new `IndexTree`
     pub fn new() -> Self {
         IndexTree {
@@ -48,9 +52,10 @@ impl<K, V> IndexTree<K, V> {
     }
 
     /// Gets the list of indices (value) for a term (key)
-    fn get(&self, k: &K) -> Option<&Vec<V>>
+    fn get<Q: ?Sized>(&self, k: &Q) -> Option<&Vec<V>>
     where
-        K: Eq + Hash,
+        K: Borrow<Q>,
+        Q: Eq + Hash,
     {
         self.map.get(k)
     }
@@ -58,10 +63,11 @@ impl<K, V> IndexTree<K, V> {
     /// Performs a boolean query (intersection) on the terms
     ///
     /// to find the common indices containing all the terms
-    pub fn query(&self, terms: &[K]) -> Vec<V>
+    pub fn query<Q: ?Sized>(&self, terms: &[&Q]) -> Vec<V>
     where
         V: Eq + Hash + Copy,
-        K: Eq + Hash,
+        Q: Eq + Hash,
+        K: Borrow<Q>,
     {
         let mut id_collection = vec![];
         for term in terms {
