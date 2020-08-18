@@ -8,3 +8,13 @@ pub enum DocType {
     Word,
     Raw,
 }
+
+#[derive(PartialEq, Debug)]
+pub enum Token {
+    /// A word of interest
+    Word(String),
+    /// This isn't a word
+    Invalid,
+    /// End of stream
+    Eos,
+}
