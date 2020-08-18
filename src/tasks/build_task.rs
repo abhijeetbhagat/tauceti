@@ -29,7 +29,7 @@ mod tests {
     extern crate relative_path;
     use crate::{
         parsing::word_reader::WordReader,
-        parsing::{reader::DocReader, text_file_reader::TextFileReader},
+        parsing::{pdf_reader::PdfReader, reader::DocReader, text_file_reader::TextFileReader},
         storage::{file_system_interface::FileSystemInterface, storage_interface::Storage},
         trees::index_tree::IndexTree,
     };
@@ -56,6 +56,16 @@ mod tests {
         assert!(path.exists().await);
         let mut fs = FileSystemInterface::new(path);
         let mut reader = WordReader::new(path);
+        build_helper(&mut fs, &mut reader, 3).await?;
+        Ok(())
+    }
+
+    #[async_std::test]
+    async fn test_buiding_with_pdf() -> std::io::Result<()> {
+        let path = Path::new("test-resume.pdf");
+        assert!(path.exists().await);
+        let mut fs = FileSystemInterface::new(path);
+        let mut reader = PdfReader::new(path);
         build_helper(&mut fs, &mut reader, 3).await?;
         Ok(())
     }

@@ -6,7 +6,7 @@ use async_trait::async_trait;
 use dotext::Docx;
 use std::io::Read;
 
-/// A PDF file reader
+/// A Word file reader
 pub struct WordReader {
     path: PathBuf,
 }
