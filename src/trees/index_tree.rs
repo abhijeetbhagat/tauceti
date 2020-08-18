@@ -47,7 +47,7 @@ where
     }
 
     /// Returns the length of the keys in the tree
-    fn keys(&self) -> usize {
+    pub fn keys(&self) -> usize {
         self.map.keys().len()
     }
 
@@ -63,7 +63,7 @@ where
     /// Performs a boolean query (intersection) on the terms
     ///
     /// to find the common indices containing all the terms
-    pub fn query<Q: ?Sized>(&self, terms: &[&Q]) -> Vec<V>
+    pub fn query<Q: ?Sized>(&self, terms: &[&Q]) -> Option<Vec<V>>
     where
         V: Eq + Hash + Copy,
         Q: Eq + Hash,
@@ -71,9 +71,18 @@ where
     {
         let mut id_collection = vec![];
         for term in terms {
-            id_collection.push(self.get(term).unwrap());
+            let result = self.get(term);
+            if result.is_none() {
+                continue;
+            }
+            id_collection.push(result.unwrap());
         }
-        self.intersection(id_collection.as_slice())
+
+        if id_collection.is_empty() {
+            return None;
+        }
+
+        Some(self.intersection(id_collection.as_slice()))
     }
 }
 
@@ -91,7 +100,7 @@ fn test_it_ops() {
             .len(),
         3
     );
-    assert_eq!(it.query(&["c++"]).len(), 2);
-    assert_eq!(it.query(&["c++", "python"]).len(), 2);
-    assert_eq!(it.query(&["c++", "python", "java"]).len(), 3);
+    assert_eq!(it.query(&["c++"]).unwrap().len(), 2);
+    assert_eq!(it.query(&["c++", "python"]).unwrap().len(), 2);
+    assert_eq!(it.query(&["c++", "python", "java"]).unwrap().len(), 3);
 }
