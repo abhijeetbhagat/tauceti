@@ -21,8 +21,12 @@ impl DocReader for TextFileReader {
         let file = File::open(&self.path).await?;
         let mut reader = BufReader::new(file);
         let mut buf = [0u8; 4096];
-        while reader.read(&mut buf).await? > 0 {
-            text.push_str(std::str::from_utf8(&buf).unwrap());
+        loop {
+            let size = reader.read(&mut buf).await?;
+            if size == 0 {
+                break;
+            }
+            text.push_str(std::str::from_utf8(&buf[..size]).unwrap());
         }
 
         Ok(text)
