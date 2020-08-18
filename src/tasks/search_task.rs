@@ -1,7 +1,6 @@
 use super::task::TaucetiTask;
 use crate::trees::index_tree::IndexTree;
-use async_std::sync::RwLock;
-use std::sync::Arc;
+use async_std::sync::{Arc, RwLock};
 
 struct SearchTask {}
 
@@ -20,10 +19,9 @@ impl TaucetiTask for SearchTask {
 pub async fn search(
     index_tree: Arc<RwLock<IndexTree<String, u32>>>,
     terms: &[&str],
-) -> Result<Vec<u32>, std::io::Error> {
+) -> Result<Option<Vec<u32>>, std::io::Error> {
     let guard = index_tree.read().await;
-    let result: Vec<u32> = guard.query(terms);
-    Ok(result)
+    Ok(guard.query(terms))
 }
 
 #[async_std::test]
@@ -37,6 +35,6 @@ async fn test_searching() -> std::io::Result<()> {
         guard.insert("java".into(), 3);
     }
 
-    assert_eq!(search(tree, &["c++"]).await.unwrap().len(), 2);
+    assert_eq!(search(tree, &["c++"]).await.unwrap().unwrap().len(), 2);
     Ok(())
 }
