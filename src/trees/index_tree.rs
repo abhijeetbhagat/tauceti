@@ -26,8 +26,7 @@ where
     where
         K: Eq + Hash + Clone,
     {
-        let v = self.map.entry(key).or_insert(vec![]);
-        v.push(val);
+        self.map.entry(key).or_insert_with(Vec::new).push(val);
     }
 
     /// Finds intersection of all the arrays
