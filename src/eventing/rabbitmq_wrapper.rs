@@ -83,6 +83,7 @@ impl RabbitMQWrapper {
         Ok(())
     }
 
+    #[allow(dead_code)]
     /// This is a test producer that just pushes a message continuously
     async fn start_test_producer(&mut self) -> Result<()> {
         let channel_a = self.conn.as_ref().unwrap().create_channel().await?;
