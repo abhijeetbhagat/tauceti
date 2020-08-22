@@ -1,5 +1,5 @@
 use super::reader::DocReader;
-use crate::async_std::io::ReadExt;
+use async_std::io::ReadExt;
 use async_std::{fs::File, io::BufReader, path::PathBuf};
 use async_trait::async_trait;
 

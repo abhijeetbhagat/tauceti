@@ -1,2 +1,2 @@
-pub(crate) mod index_tree;
-pub(crate) mod trie;
+pub mod index_tree;
+pub mod trie;
