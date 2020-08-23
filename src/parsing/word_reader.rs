@@ -19,7 +19,7 @@ impl WordReader {
 
 #[async_trait]
 impl DocReader for WordReader {
-    async fn parse(&mut self, _: async_std::path::PathBuf) -> Result<String, std::io::Error> {
+    async fn parse(&mut self) -> Result<String, std::io::Error> {
         let mut file = Docx::open(&self.path).unwrap();
         let mut content = String::new();
         let _ = file.read_to_string(&mut content);
@@ -30,7 +30,7 @@ impl DocReader for WordReader {
 #[async_std::test]
 async fn test_doc_reading() -> std::io::Result<()> {
     let mut word_reader = WordReader::new("test-resume.docx");
-    let content = word_reader.parse("".into()).await.unwrap();
+    let content = word_reader.parse().await.unwrap();
     assert_eq!(content, "\n\ncpp python irrelevant java");
     Ok(())
 }

@@ -1,14 +1,10 @@
 use super::rabbitmq_wrapper::RabbitMQWrapper;
 
-use crate::storage::{storage_interface::Storage, storage_utils::create_storage_interface};
 use crate::utils::{
     connection_context::ConnectionContext, error_structs::TaucetiError, events::TaucetiEvent,
+    reader_enums::DocType, storage_enums::StorageType,
 };
-use crate::{
-    parsing::{reader::DocReader, reader_utils::create_doc_reader},
-    tasks::build_task,
-    trees::index_tree::IndexTree,
-};
+use crate::{tasks::build_task, trees::index_tree::IndexTree};
 use async_std::{
     prelude::*,
     sync::{Arc, RwLock},
@@ -69,12 +65,9 @@ impl EventListener {
         debug!("msg received from broker {}", msg,);
         match event {
             TaucetiEvent::UploadEvent(storage_type, doc_type, uri, doc_id) => {
-                let mut storage = create_storage_interface(&storage_type, uri.clone());
-                let mut reader = create_doc_reader(&doc_type, uri.clone());
-
-                Self::handle(&mut storage, &mut reader, tree, doc_id).await?;
+                Self::handle(storage_type, uri, tree, doc_id, doc_type).await?;
             }
-            TaucetiEvent::SearchEvent(terms) => {}
+            TaucetiEvent::SearchEvent(terms) => todo!(),
         }
 
         Ok(())
@@ -82,12 +75,13 @@ impl EventListener {
 
     /// Kicks off document processing
     async fn handle(
-        s: &mut Box<dyn Storage>,
-        r: &mut Box<dyn DocReader>,
+        storage_type: StorageType,
+        uri: String,
         tree: Arc<RwLock<IndexTree<String, u32>>>,
         doc_id: u32,
+        doc_type: DocType,
     ) -> Result<(), std::io::Error> {
-        build_task::build(s.as_mut(), r.as_mut(), tree, doc_id).await?;
+        build_task::build(storage_type, uri, tree, doc_id, doc_type).await?;
         Ok(())
     }
 }

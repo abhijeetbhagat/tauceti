@@ -15,7 +15,7 @@ impl FakeSource {
 
 #[async_trait]
 impl DocReader for FakeSource {
-    async fn parse(&mut self, _: PathBuf) -> Result<String, std::io::Error> {
+    async fn parse(&mut self) -> Result<String, std::io::Error> {
         Ok("c++ python java c#".into())
     }
 }

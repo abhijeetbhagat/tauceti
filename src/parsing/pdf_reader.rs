@@ -17,7 +17,7 @@ impl PdfReader {
 
 #[async_trait]
 impl DocReader for PdfReader {
-    async fn parse(&mut self, _: async_std::path::PathBuf) -> Result<String, std::io::Error> {
+    async fn parse(&mut self) -> Result<String, std::io::Error> {
         let doc = Document::load(&self.path).unwrap();
         let pages: Vec<u32> = doc.get_pages().keys().cloned().collect();
         let result = doc.extract_text(&pages).unwrap();

@@ -16,7 +16,7 @@ impl TextFileReader {
 
 #[async_trait]
 impl DocReader for TextFileReader {
-    async fn parse(&mut self, path: PathBuf) -> Result<String, std::io::Error> {
+    async fn parse(&mut self) -> Result<String, std::io::Error> {
         let mut text = String::new();
         let file = File::open(&self.path).await?;
         let mut reader = BufReader::new(file);
