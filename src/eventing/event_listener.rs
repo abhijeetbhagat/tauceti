@@ -67,7 +67,7 @@ impl EventListener {
             TaucetiEvent::UploadEvent(storage_type, doc_type, uri, doc_id) => {
                 Self::handle(storage_type, uri, tree, doc_id, doc_type).await?;
             }
-            TaucetiEvent::SearchEvent(terms) => todo!(),
+            TaucetiEvent::SearchEvent(query) => todo!(),
         }
 
         Ok(())

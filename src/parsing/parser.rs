@@ -36,8 +36,8 @@ async fn test_parsing() -> std::io::Result<()> {
     let tree = Arc::new(RwLock::new(IndexTree::new()));
     let mut parser = Parser::new("cpp python java gandole", tree.clone(), 1);
     parser.parse().await;
-    assert_eq!(tree.read().await.query(&["cpp"]).unwrap().len(), 1);
-    assert_eq!(tree.read().await.query(&["python"]).unwrap().len(), 1);
-    assert_eq!(tree.read().await.query(&["java"]).unwrap().len(), 1);
+    assert_eq!(tree.read().await.get("cpp").unwrap().len(), 1);
+    assert_eq!(tree.read().await.get("python").unwrap().len(), 1);
+    assert_eq!(tree.read().await.get("java").unwrap().len(), 1);
     Ok(())
 }

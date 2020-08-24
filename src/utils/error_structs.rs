@@ -4,4 +4,5 @@ pub enum TaucetiError {
     EventListenerError,
     MessageBrokerError,
     QueryParseError,
+    SearchError,
 }

@@ -8,12 +8,19 @@ async fn test_searching() -> std::io::Result<()> {
     let tree = Arc::new(RwLock::new(IndexTree::new()));
     {
         let mut guard = tree.write().await;
-        guard.insert("c++".into(), 1);
-        guard.insert("c++".into(), 2);
+        guard.insert("cpp".into(), 1);
+        guard.insert("cpp".into(), 2);
         guard.insert("python".into(), 1);
         guard.insert("java".into(), 3);
     }
 
-    assert_eq!(search(tree, &["c++"]).await.unwrap().unwrap().len(), 2);
+    assert_eq!(
+        search(tree.clone(), "cpp and python".into())
+            .await
+            .unwrap()
+            .len(),
+        1
+    );
+    assert_eq!(search(tree, "cpp or java".into()).await.unwrap().len(), 3);
     Ok(())
 }

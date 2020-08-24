@@ -1,5 +1,6 @@
 use super::task::TaucetiTask;
-use crate::trees::index_tree::IndexTree;
+use crate::parsing::query_parsing::query_parser::QueryParser;
+use crate::{trees::index_tree::IndexTree, utils::error_structs::TaucetiError};
 use async_std::sync::{Arc, RwLock};
 
 struct SearchTask {}
@@ -21,9 +22,11 @@ pub fn filter(query: String) -> Vec<String> {
 }
 
 pub async fn search(
-    index_tree: Arc<RwLock<IndexTree<String, u32>>>,
-    terms: &[&str],
-) -> Result<Option<Vec<u32>>, std::io::Error> {
-    let guard = index_tree.read().await;
-    Ok(guard.query(terms))
+    tree: Arc<RwLock<IndexTree<String, u32>>>,
+    query: String,
+) -> Result<Vec<u32>, TaucetiError> {
+    let mut parser = QueryParser::new(&query);
+    let expr = parser.parse()?;
+    let set = super::search_helper::walk(&expr, tree).await;
+    Ok(set.into_iter().collect::<Vec<u32>>())
 }
