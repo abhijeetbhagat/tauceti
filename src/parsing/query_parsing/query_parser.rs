@@ -47,7 +47,12 @@ impl<'a> QueryParser<'a> {
             }
         }
 
-        Ok(self.expr_stack.pop().unwrap())
+        let expr = self.expr_stack.pop().unwrap();
+        if !self.expr_stack.is_empty() {
+            return Err(TaucetiError::QueryParseError);
+        }
+
+        Ok(expr)
     }
 
     /// Main entry point of the parsing logic
@@ -166,5 +171,12 @@ mod tests {
                 )),
             )
         );
+    }
+
+    #[test]
+    fn test_parsing_invalid() {
+        let mut parser = QueryParser::new("cpp or ");
+        let result = parser.parse();
+        assert!(result.is_err());
     }
 }

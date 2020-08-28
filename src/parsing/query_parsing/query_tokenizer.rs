@@ -101,28 +101,6 @@ impl<'a> Iterator for QueryLexer<'a> {
     }
 }
 
-/*
-pub struct IterHelper<'a> {
-    iter: &'a QueryLexer<'a>, //::std::slice::Iter<'a, &'a Token>,
-}
-
-impl<'a> Iterator for IterHelper<'a> {
-    type Item = Token;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.iter.next()
-    }
-}
-
-impl<'a> IntoIterator for &'a QueryLexer<'a> {
-    type Item = Token;
-    type IntoIter = IterHelper<'a>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        IterHelper { iter: self }
-    }
-}
-*/
 #[cfg(test)]
 mod tests {
     use super::{QueryLexer, Token};

@@ -30,24 +30,6 @@ where
         self.map.entry(key).or_insert_with(HashSet::new).insert(val);
     }
 
-    /*
-    /// Finds intersection of all the arrays
-    pub fn intersection<U>(&self, ids: &[U]) -> HashSet<V>
-    where
-        V: Eq + Hash + Copy,
-        U: AsRef<[V]>,
-    {
-        let mut set = HashSet::new();
-        for array in ids {
-            for id in array.as_ref() {
-                set.insert(*id);
-            }
-        }
-
-        set
-    }
-    */
-
     /// Returns the length of the keys in the tree
     pub fn keys(&self) -> usize {
         self.map.keys().len()
@@ -61,33 +43,6 @@ where
     {
         self.map.get(k)
     }
-
-    /*
-    /// Performs a boolean query (intersection) on the terms
-    ///
-    /// to find the common indices containing all the terms
-    pub fn query<Q: ?Sized>(&self, terms: &[&Q]) -> Option<HashSet<V>>
-    where
-        V: Eq + Hash + Copy,
-        Q: Eq + Hash,
-        K: Borrow<Q>,
-    {
-        let mut id_collection = HashSet::new();
-        for term in terms {
-            let result = self.get(term);
-            if result.is_none() {
-                continue;
-            }
-            id_collection.extend(result.unwrap());
-        }
-
-        if id_collection.is_empty() {
-            return None;
-        }
-
-        Some(self.intersection(id_collection))
-    }
-    */
 }
 
 impl<K, V> Default for IndexTree<K, V>
