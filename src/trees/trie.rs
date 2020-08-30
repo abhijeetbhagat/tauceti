@@ -19,7 +19,7 @@ impl Node {
 
 /// Represents a dictionary of words
 ///
-/// Supported operations - `insert`, `get`.
+/// Supported operations - `insert`, 'is_present', `get`.
 pub struct Trie {
     root: Node,
 }
@@ -44,9 +44,12 @@ impl Trie {
             let i = c as usize % 97;
             if node.alphabets.is_none() {
                 node.alphabets = Some(vec![None; 26]);
-                //[i] = Some(Node::new());
             }
-            node.alphabets.as_mut().unwrap()[i] = Some(Node::new());
+
+            if node.alphabets.as_ref().unwrap()[i].is_none() {
+                node.alphabets.as_mut().unwrap()[i] = Some(Node::new());
+            }
+
             Self::insert_internal(
                 word_itr.next(),
                 word_itr,
@@ -101,5 +104,13 @@ fn test_trie_construct() {
     trie.insert("java");
     assert!(trie.is_present("cpp"));
     assert!(trie.is_present("python"));
-    assert!(trie.is_present("java"));
+}
+
+#[test]
+fn test_trie_tail_fetching() {
+    let mut trie = Trie::new();
+    trie.insert("cpp");
+    trie.insert("clojure");
+    assert!(trie.is_present("cpp"));
+    assert!(trie.is_present("clojure"));
 }
