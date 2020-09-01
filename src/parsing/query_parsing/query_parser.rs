@@ -67,7 +67,6 @@ impl<'a> QueryParser<'a> {
                 Ok(Box::new(QueryExpression::Or(op1, self.expr()?)))
             }
             Some(Token::Term) => self.parse_term_expr(),
-            //Token::Eos => {}
             Some(Token::LeftParen) => {
                 self.parens_stack.push(Token::LeftParen);
                 self.expr()
