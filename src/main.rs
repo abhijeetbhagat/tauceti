@@ -23,7 +23,7 @@ async fn main() -> Result<(), TaucetiError> {
 
     env_logger::init();
 
-    let mut engine = SearchEngine::new(ConnectionContext {
+    let mut engine = SearchEngine::try_new(ConnectionContext {
         addr: "amqp://127.0.0.1:5672/%2f".into(),
         search_events_queue: "search_events".into(),
         upload_events_queue: "upload_events".into(),

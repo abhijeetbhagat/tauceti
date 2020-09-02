@@ -24,7 +24,7 @@ impl EventListener {
     /// Creates an `EventListener`
     ///
     /// `ConnectionContext` contains the address and the queue name
-    pub async fn new(ctxt: ConnectionContext) -> Result<EventListener, TaucetiError> {
+    pub async fn try_new(ctxt: ConnectionContext) -> Result<EventListener, TaucetiError> {
         let (tx, rx) = mpsc::unbounded();
         Ok(EventListener {
             broker: RabbitMQWrapper::new(ctxt, tx),

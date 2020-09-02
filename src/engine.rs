@@ -9,9 +9,9 @@ pub(crate) struct SearchEngine {
 
 impl SearchEngine {
     /// Creates a new `SearchEngine`
-    pub async fn new(ctxt: ConnectionContext) -> Result<SearchEngine, TaucetiError> {
+    pub async fn try_new(ctxt: ConnectionContext) -> Result<SearchEngine, TaucetiError> {
         Ok(SearchEngine {
-            listener: EventListener::new(ctxt).await?,
+            listener: EventListener::try_new(ctxt).await?,
         })
     }
 
