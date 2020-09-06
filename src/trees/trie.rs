@@ -17,6 +17,7 @@ impl Node {
     }
 }
 
+#[derive(Clone, Debug)]
 /// Represents a dictionary of words
 ///
 /// Supported operations - `insert`, 'is_present', `get`.

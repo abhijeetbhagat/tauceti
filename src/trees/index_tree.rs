@@ -4,6 +4,7 @@ use std::{
     hash::Hash,
 };
 
+#[derive(Clone, Debug)]
 pub struct IndexTree<K, V> {
     map: HashMap<K, HashSet<V>>,
 }

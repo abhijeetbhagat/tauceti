@@ -11,6 +11,7 @@ use lapin::{
 };
 use log::debug;
 
+#[derive(Debug)]
 pub struct RabbitMQWrapper {
     search_queue: String,
     upload_queue: String,

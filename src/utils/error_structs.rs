@@ -5,4 +5,5 @@ pub enum TaucetiError {
     MessageBrokerError,
     QueryParseError,
     SearchError,
+    NotFoundInDictError,
 }
