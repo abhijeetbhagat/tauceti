@@ -9,27 +9,26 @@ use std::{collections::HashSet, sync::Arc};
 /// by retrieving the sets from the index-tree while the walking is done.
 pub fn walk<'a>(
     ast: &'a QueryExpression,
-    tree: Arc<RwLock<IndexTree<String, u32>>>,
+    tree: &'a IndexTree<String, u32>,
 ) -> BoxFuture<'a, HashSet<u32>> {
     async move {
         match ast {
             QueryExpression::And(op1, op2) => {
-                let result = walk(op1, tree.clone()).await;
+                let result = walk(op1, tree).await;
                 return result
-                    .intersection(&walk(op2, tree.clone()).await)
+                    .intersection(&walk(op2, tree).await)
                     .cloned()
                     .collect::<HashSet<u32>>();
             }
             QueryExpression::Or(op1, op2) => {
-                let result = walk(op1, tree.clone()).await;
+                let result = walk(op1, tree).await;
                 return result
-                    .union(&walk(op2, tree.clone()).await)
+                    .union(&walk(op2, tree).await)
                     .cloned()
                     .collect::<HashSet<u32>>();
             }
             QueryExpression::Term(term) => {
-                let guard = tree.read().await;
-                let hs = guard.get(term).unwrap();
+                let hs = tree.get(term).unwrap();
                 return hs.to_owned();
             }
         }

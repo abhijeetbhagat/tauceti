@@ -4,14 +4,17 @@ use std::{
     hash::Hash,
 };
 
-#[derive(Clone, Debug)]
-pub struct IndexTree<K, V> {
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct IndexTree<K: Eq + Hash, V: Eq + Hash> {
     map: HashMap<K, HashSet<V>>,
 }
 
 impl<K, V> IndexTree<K, V>
 where
     K: Eq + Hash,
+    V: Eq + Hash,
 {
     /// Creates a new `IndexTree`
     pub fn new() -> Self {
@@ -49,6 +52,7 @@ where
 impl<K, V> Default for IndexTree<K, V>
 where
     K: Eq + Hash,
+    V: Eq + Hash,
 {
     fn default() -> Self {
         IndexTree::new()

@@ -1,30 +1,51 @@
 #[cfg(test)]
 mod tests {
-    extern crate tauceti;
     extern crate relative_path;
-    use tauceti::{
-        trees::index_tree::IndexTree,
-        tasks::build_task::build,
-        utils::{reader_enums::DocType, storage_enums::StorageType}
-    };
+    extern crate tauceti;
     use async_std::sync::{Arc, RwLock};
+    use tauceti::{
+        tasks::build_task::build,
+        trees::index_tree::IndexTree,
+        utils::{reader_enums::DocType, storage_enums::StorageType},
+    };
 
     #[async_std::test]
     #[cfg(target_os = "windows")]
     async fn test_buiding_with_text_file() -> std::io::Result<()> {
-        build_helper(StorageType::FileSystem, "test-resume".into(), 1, DocType::Word, 3).await?;
+        build_helper(
+            StorageType::FileSystem,
+            "test-resume".into(),
+            1,
+            DocType::Word,
+            3,
+        )
+        .await?;
         Ok(())
     }
 
     #[async_std::test]
     async fn test_buiding_with_word_docx() -> std::io::Result<()> {
-        build_helper(StorageType::FileSystem, "test-resume.docx".into(), 1, DocType::Word, 3).await?;
+        build_helper(
+            StorageType::FileSystem,
+            "test-resume.docx".into(),
+            1,
+            DocType::Word,
+            3,
+        )
+        .await?;
         Ok(())
     }
 
     #[async_std::test]
     async fn test_buiding_with_pdf() -> std::io::Result<()> {
-        build_helper(StorageType::FileSystem, "test-resume.pdf".into(), 1, DocType::PDF, 3).await?;
+        build_helper(
+            StorageType::FileSystem,
+            "test-resume.pdf".into(),
+            1,
+            DocType::PDF,
+            3,
+        )
+        .await?;
         Ok(())
     }
 

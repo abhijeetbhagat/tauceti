@@ -21,6 +21,7 @@ pub fn filter(query: String) -> Vec<String> {
     todo!()
 }
 
+/*
 pub async fn search(
     tree: Arc<RwLock<IndexTree<String, u32>>>,
     query: String,
@@ -30,3 +31,4 @@ pub async fn search(
     let set = super::search_helper::walk(&expr, tree).await;
     Ok(set.into_iter().collect::<Vec<u32>>())
 }
+*/
