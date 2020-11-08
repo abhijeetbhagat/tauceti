@@ -14,15 +14,15 @@ mod utils;
 
 use cache::cache::Cache;
 use cache::in_mem_cache::MockCache;
+use cache::tikv_cache::TiKVCache;
 use engine::SearchEngine;
 use log::info;
 use routes::{prefix_search, search};
 use utils::connection_context::ConnectionContext;
 use utils::error_structs::TaucetiError;
 
-async fn cache_connect() -> impl Cache {
-    let mut cache = MockCache::new();
-    cache
+async fn cache_connect() -> Result<impl Cache, TaucetiError> {
+    TiKVCache::new("127.0.0.1:2379").await
 }
 
 #[async_std::main]
@@ -33,9 +33,9 @@ async fn main() -> Result<(), TaucetiError> {
 
     env_logger::init();
 
-    let cache = cache_connect().await;
+    let cache = cache_connect().await?;
 
-    let mut engine = SearchEngine::try_new(cache, "walkin".into()).await?;
+    let engine = SearchEngine::try_new(cache, "walkin".into()).await?;
 
     let mut app = tide::with_state(engine);
 
@@ -44,7 +44,9 @@ async fn main() -> Result<(), TaucetiError> {
     app.at("/search/:query").get(routes::search);
     //app.at("/insert").get(routes::insert);
     app.at("/get_words/:prefix").get(routes::prefix_search);
-    app.listen("0.0.0.0:8000").await;
+    app.listen("0.0.0.0:8000")
+        .await
+        .map_err(|_| TaucetiError::ServiceStartError)?;
 
     Ok(())
 }

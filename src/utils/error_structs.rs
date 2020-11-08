@@ -6,5 +6,9 @@ pub enum TaucetiError {
     QueryParseError,
     SearchError,
     NotFoundInDictError,
+    CacheConnectionError,
     CacheError,
+    CacheDataNotFoundError,
+    CacheWriteError,
+    ServiceStartError,
 }
