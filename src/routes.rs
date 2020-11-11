@@ -10,8 +10,8 @@ pub(crate) async fn search<C>(req: Request<SearchEngine<C>>) -> tide::Result<imp
 where
     C: Cache,
 {
-    let query: String = req.param("query")?;
-    let results: Vec<u32> = req.state().search(query.as_str()).await.unwrap();
+    let query = req.param("query")?;
+    let results: Vec<u32> = req.state().search(query).await.unwrap();
     let results: Vec<String> = results.iter().map(|n| n.to_string()).collect();
     Ok(results.join("\n"))
 }
@@ -32,7 +32,7 @@ pub(crate) async fn prefix_search<C>(
 where
     C: Cache,
 {
-    let prefix: String = req.param("prefix")?;
-    let results = req.state().prefix_search(prefix.as_str()).await.unwrap();
+    let prefix = req.param("prefix")?;
+    let results = req.state().prefix_search(prefix).await.unwrap();
     Ok(results.join("\n"))
 }

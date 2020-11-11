@@ -11,7 +11,7 @@ use async_std::sync::{Arc, RwLock};
 /// Main engine that takes care of spawning event listening and other tasks.
 pub(crate) struct SearchEngine<C>
 where
-    C: Cache,
+    C: Cache + Send + Sync,
 {
     //listener: EventListener,
     trie: Trie,
@@ -19,6 +19,9 @@ where
     cache: C,
     key: String,
 }
+
+unsafe impl<C: Cache> Send for SearchEngine<C> {}
+unsafe impl<C: Cache> Sync for SearchEngine<C> {}
 
 impl<C> SearchEngine<C>
 where
